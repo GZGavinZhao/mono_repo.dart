@@ -270,6 +270,14 @@ extension on CIJobEntry {
 
     final commandEntries = <_CommandEntry>[];
     for (var package in packages) {
+      if (rootConfig.monoConfig.melos) {
+        commandEntries.add(_CommandEntry(
+          '$package; setup and bootstrap melos',
+          'dart pub global activate melos; melos bs',
+          id: '${package.replaceAll('/', '_')}_melos',
+        ));
+      }
+
       final pubStepId = '${package.replaceAll('/', '_')}_'
           'pub_${rootConfig.monoConfig.pubAction}';
       commandEntries.add(

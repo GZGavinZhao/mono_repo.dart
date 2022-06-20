@@ -16,6 +16,7 @@ const _allowedMonoConfigKeys = {
   'github',
   'merge_stages',
   'pretty_ansi',
+  'melos',
   'pub_action',
   'self_validate',
 };
@@ -31,6 +32,7 @@ class MonoConfig {
   final Map<String, ConditionalStage> githubConditionalStages;
   final Set<String> mergeStages;
   final bool prettyAnsi;
+  final bool melos;
   final String pubAction;
   final String? selfValidateStage;
   final GitHubConfig github;
@@ -38,6 +40,7 @@ class MonoConfig {
   factory MonoConfig({
     required Set<String> mergeStages,
     required bool prettyAnsi,
+    required bool melos,
     required String pubAction,
     required String? selfValidateStage,
     required Map github,
@@ -48,6 +51,7 @@ class MonoConfig {
       githubConditionalStages: githubConditionalStages,
       mergeStages: mergeStages,
       prettyAnsi: prettyAnsi,
+      melos: melos,
       pubAction: pubAction,
       selfValidateStage: selfValidateStage,
       github: GitHubConfig.fromJson(github),
@@ -58,6 +62,7 @@ class MonoConfig {
     required this.githubConditionalStages,
     required this.mergeStages,
     required this.prettyAnsi,
+    required this.melos,
     required this.pubAction,
     required this.selfValidateStage,
     required this.github,
@@ -124,6 +129,16 @@ class MonoConfig {
       );
     }
 
+    final melos = json['melos'] ?? true;
+    if (melos is! bool) {
+      throw CheckedFromJsonException(
+        json,
+        'melos',
+        'MonoConfig',
+        'Value must be`true` or `false`',
+      );
+    }
+
     final pubAction = json['pub_action'] ?? _defaultPubAction;
     if (pubAction is! String || !_allowedPubActions.contains(pubAction)) {
       final allowed = _allowedPubActions.map((e) => '`$e`').join(', ');
@@ -150,6 +165,7 @@ class MonoConfig {
       return MonoConfig(
         mergeStages: Set.from(mergeStages),
         prettyAnsi: prettyAnsi,
+        melos: melos,
         pubAction: pubAction,
         selfValidateStage: _selfValidateFromValue(selfValidate),
         github: github,
@@ -173,6 +189,7 @@ class MonoConfig {
         mergeStages: <String>{},
         pubAction: _defaultPubAction,
         prettyAnsi: true,
+        melos: false,
         selfValidateStage: null,
         github: {},
       );
